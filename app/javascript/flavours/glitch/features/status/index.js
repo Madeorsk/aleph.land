@@ -26,13 +26,13 @@ import {
   directCompose,
 } from 'flavours/glitch/actions/compose';
 import { changeLocalSetting } from 'flavours/glitch/actions/local_settings';
-import { muteStatus, unmuteStatus, deleteStatus } from 'flavours/glitch/actions/statuses';
+import { muteStatus, unmuteStatus, deleteStatus, editStatus } from 'flavours/glitch/actions/statuses';
 import { initMuteModal } from 'flavours/glitch/actions/mutes';
 import { initBlockModal } from 'flavours/glitch/actions/blocks';
 import { initReport } from 'flavours/glitch/actions/reports';
 import { initBoostModal } from 'flavours/glitch/actions/boosts';
 import { makeGetStatus } from 'flavours/glitch/selectors';
-import { ScrollContainer } from 'react-router-scroll-4';
+import ScrollContainer from 'flavours/glitch/containers/scroll_container';
 import ColumnBackButton from 'flavours/glitch/components/column_back_button';
 import ColumnHeader from '../../components/column_header';
 import StatusContainer from 'flavours/glitch/containers/status_container';
@@ -70,7 +70,7 @@ const makeMapStateToProps = () => {
     ancestorsIds = ancestorsIds.withMutations(mutable => {
       let id = statusId;
 
-      while (id) {
+      while (id && !mutable.includes(id)) {
         mutable.unshift(id);
         id = inReplyTos.get(id);
       }
@@ -88,7 +88,7 @@ const makeMapStateToProps = () => {
     const ids = [statusId];
 
     while (ids.length > 0) {
-      let id        = ids.shift();
+      let id        = ids.pop();
       const replies = contextReplies.get(id);
 
       if (statusId !== id) {
@@ -97,7 +97,7 @@ const makeMapStateToProps = () => {
 
       if (replies) {
         replies.reverse().forEach(reply => {
-          ids.unshift(reply);
+          if (!ids.includes(reply) && !descendantsIds.includes(reply) && statusId !== reply) ids.push(reply);
         });
       }
     }
@@ -307,6 +307,10 @@ class Status extends ImmutablePureComponent {
     }
   }
 
+  handleEditClick = (status, history) => {
+    this.props.dispatch(editStatus(status.get('id'), history));
+  }
+
   handleDirectClick = (account, router) => {
     this.props.dispatch(directCompose(account, router));
   }
@@ -405,7 +409,7 @@ class Status extends ImmutablePureComponent {
   handleHotkeyOpenProfile = () => {
     let state = {...this.context.router.history.location.state};
     state.mastodonBackSteps = (state.mastodonBackSteps || 0) + 1;
-    this.context.router.history.push(`/accounts/${this.props.status.getIn(['account', 'id'])}`, state);
+    this.context.router.history.push(`/@${this.props.status.getIn(['account', 'acct'])}`, state);
   }
 
   handleMoveUp = id => {
@@ -507,11 +511,6 @@ class Status extends ImmutablePureComponent {
     this.setState({ fullscreen: isFullscreen() });
   }
 
-  shouldUpdateScroll = (prevRouterProps, { location }) => {
-    if ((((prevRouterProps || {}).location || {}).state || {}).mastodonModalOpen) return false;
-    return !(location.state && location.state.mastodonModalOpen);
-  }
-
   render () {
     let ancestors, descendants;
     const { setExpansion } = this;
@@ -562,7 +561,7 @@ class Status extends ImmutablePureComponent {
           )}
         />
 
-        <ScrollContainer scrollKey='thread' shouldUpdateScroll={this.shouldUpdateScroll}>
+        <ScrollContainer scrollKey='thread'>
           <div className={classNames('scrollable', 'detailed-status__wrapper', { fullscreen })} ref={this.setRef}>
             {ancestors}
 
@@ -590,6 +589,7 @@ class Status extends ImmutablePureComponent {
                   onReblog={this.handleReblogClick}
                   onBookmark={this.handleBookmarkClick}
                   onDelete={this.handleDeleteClick}
+                  onEdit={this.handleEditClick}
                   onDirect={this.handleDirectClick}
                   onMention={this.handleMentionClick}
                   onMute={this.handleMuteClick}

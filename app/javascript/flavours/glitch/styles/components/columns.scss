@@ -437,10 +437,15 @@
 }
 
 .column-header__setting-btn {
-  &:hover {
+  &:hover,
+  &:focus {
     color: $darker-text-color;
     text-decoration: underline;
   }
+}
+
+.column-header__collapsible__extra + .column-header__setting-btn {
+  padding-top: 5px;
 }
 
 .column-header__permission-btn {
@@ -453,10 +458,15 @@
   float: right;
 
   .column-header__setting-btn {
-    padding: 0 10px;
+    padding: 5px;
+
+    &:first-child {
+      padding-right: 7px;
+    }
 
     &:last-child {
-      padding-right: 0;
+      padding-left: 7px;
+      margin-left: 5px;
     }
   }
 }
@@ -550,6 +560,15 @@
   }
 }
 
+.limited-account-hint {
+  p {
+    color: $secondary-text-color;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+}
+
 .empty-column-indicator,
 .error-column,
 .follow_requests-unlocked_explanation {
@@ -569,7 +588,7 @@
   }
 
   & > span {
-    max-width: 400px;
+    max-width: 500px;
   }
 
   a {
@@ -718,7 +737,8 @@
     }
 
     &__multi-value__label,
-    &__input {
+    &__input,
+    &__input-container {
       color: $darker-text-color;
     }
 

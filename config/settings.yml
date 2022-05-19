@@ -17,7 +17,6 @@ defaults: &defaults
   min_invite_role: 'admin'
   show_staff_badge: true
   default_sensitive: false
-  hide_network: false
   unfollow_modal: false
   boost_modal: false
   favourite_modal: false
@@ -33,7 +32,6 @@ defaults: &defaults
   system_emoji_font: false
   noindex: false
   hide_followers_count: false
-  enable_keybase: true
   flavour: 'glitch'
   skin: 'default'
   aggregate_reblogs: true
@@ -42,17 +40,22 @@ defaults: &defaults
   use_pending_items: false
   trends: true
   trendable_by_default: false
+  trending_status_cw: true
   crop_images: true
   notification_emails:
-    follow: false
+    follow: true
     reblog: false
     favourite: false
-    mention: false
+    mention: true
     follow_request: true
     digest: true
     report: true
     pending_account: true
     trending_tag: true
+    trending_link: false
+    trending_status: false
+    appeal: true
+  always_send_emails: false
   interactions:
     must_be_follower: false
     must_be_following: false
@@ -78,6 +81,7 @@ defaults: &defaults
   show_domain_blocks_rationale: 'disabled'
   outgoing_spoilers: ''
   require_invite_text: false
+  captcha_enabled: false
 
 development:
   <<: *defaults

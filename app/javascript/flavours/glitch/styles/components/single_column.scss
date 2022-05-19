@@ -94,17 +94,7 @@
     padding: 0;
   }
 
-  .directory__list {
-    display: grid;
-    grid-gap: 10px;
-    grid-template-columns: minmax(0, 50%) minmax(0, 50%);
-
-    @media screen and (max-width: $no-gap-breakpoint) {
-      display: block;
-    }
-  }
-
-  .directory__card {
+  .account-card {
     margin-bottom: 0;
   }
 
@@ -242,6 +232,10 @@
 @media screen and (max-width: 600px + (285px * 1) + (10px * 1)) {
   .columns-area__panels__pane--compositional {
     display: none;
+  }
+
+  .with-fab .scrollable .item-list:last-child {
+    padding-bottom: 5.25rem;
   }
 }
 

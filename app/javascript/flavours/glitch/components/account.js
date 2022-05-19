@@ -16,8 +16,10 @@ const messages = defineMessages({
   requested: { id: 'account.requested', defaultMessage: 'Awaiting approval' },
   unblock: { id: 'account.unblock', defaultMessage: 'Unblock @{name}' },
   unmute: { id: 'account.unmute', defaultMessage: 'Unmute @{name}' },
-  mute_notifications: { id: 'account.mute_notifications', defaultMessage: 'You are not currently muting notifications from @{name}. Click to mute notifications' },
-  unmute_notifications: { id: 'account.unmute_notifications', defaultMessage: 'You are currently muting notifications from @{name}. Click to unmute notifications' },
+  mute_notifications: { id: 'account.mute_notifications', defaultMessage: 'Mute notifications from @{name}' },
+  unmute_notifications: { id: 'account.unmute_notifications', defaultMessage: 'Unmute notifications from @{name}' },
+  mute: { id: 'account.mute', defaultMessage: 'Mute @{name}' },
+  block: { id: 'account.block', defaultMessage: 'Block @{name}' },
 });
 
 export default @injectIntl
@@ -34,6 +36,7 @@ class Account extends ImmutablePureComponent {
     small: PropTypes.bool,
     actionIcon: PropTypes.string,
     actionTitle: PropTypes.string,
+    defaultAction: PropTypes.string,
     onActionClick: PropTypes.func,
   };
 
@@ -70,6 +73,7 @@ class Account extends ImmutablePureComponent {
       onActionClick,
       actionIcon,
       actionTitle,
+      defaultAction,
     } = this.props;
 
     if (!account) {
@@ -114,6 +118,10 @@ class Account extends ImmutablePureComponent {
             {hidingNotificationsButton}
           </Fragment>
         );
+      } else if (defaultAction === 'mute') {
+        buttons = <IconButton icon='volume-off' title={intl.formatMessage(messages.mute, { name: account.get('username') })} onClick={this.handleMute} />;
+      } else if (defaultAction === 'block') {
+        buttons = <IconButton icon='lock' title={intl.formatMessage(messages.block, { name: account.get('username') })} onClick={this.handleBlock} />;
       } else if (!account.get('moved') || following) {
         buttons = <IconButton icon={following ? 'user-times' : 'user-plus'} title={intl.formatMessage(following ? messages.unfollow : messages.follow)} onClick={this.handleFollow} active={following} />;
       }
@@ -128,7 +136,7 @@ class Account extends ImmutablePureComponent {
       <Permalink
         className='account small'
         href={account.get('url')}
-        to={`/accounts/${account.get('id')}`}
+        to={`/@${account.get('acct')}`}
       >
         <div className='account__avatar-wrapper'>
           <Avatar
@@ -144,7 +152,7 @@ class Account extends ImmutablePureComponent {
     ) : (
       <div className='account'>
         <div className='account__wrapper'>
-          <Permalink key={account.get('id')} className='account__display-name' href={account.get('url')} to={`/accounts/${account.get('id')}`}>
+          <Permalink key={account.get('id')} className='account__display-name' title={account.get('acct')} href={account.get('url')} to={`/@${account.get('acct')}`}>
             <div className='account__avatar-wrapper'><Avatar account={account} size={36} /></div>
             {mute_expires_at}
             <DisplayName account={account} />

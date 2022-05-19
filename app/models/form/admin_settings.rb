@@ -27,7 +27,6 @@ class Form::AdminSettings
     custom_css
     profile_directory
     hide_followers_count
-    enable_keybase
     flavour_and_skin
     thumbnail
     hero
@@ -36,11 +35,13 @@ class Form::AdminSettings
     show_replies_in_public_timelines
     trends
     trendable_by_default
+    trending_status_cw
     show_domain_blocks
     show_domain_blocks_rationale
     noindex
     outgoing_spoilers
     require_invite_text
+    captcha_enabled
   ).freeze
 
   BOOLEAN_KEYS = %i(
@@ -53,13 +54,14 @@ class Form::AdminSettings
     preview_sensitive_media
     profile_directory
     hide_followers_count
-    enable_keybase
     show_reblogs_in_public_timelines
     show_replies_in_public_timelines
     trends
     trendable_by_default
+    trending_status_cw
     noindex
     require_invite_text
+    captcha_enabled
   ).freeze
 
   UPLOAD_KEYS = %i(
