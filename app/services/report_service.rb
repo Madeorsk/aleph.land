@@ -39,8 +39,8 @@ class ReportService < BaseService
     return if @report.unresolved_siblings?
 
     User.staff.includes(:account).each do |u|
-      next unless u.allows_report_emails?
-      AdminMailer.new_report(u.account, @report).deliver_later
+      LocalNotificationWorker.perform_async(u.account_id, @report.id, 'Report', 'admin.report')
+      AdminMailer.new_report(u.account, @report).deliver_later if u.allows_report_emails?
     end
   end
 
@@ -57,7 +57,7 @@ class ReportService < BaseService
   end
 
   def reported_status_ids
-    @target_account.statuses.with_discarded.find(Array(@status_ids)).pluck(:id)
+    AccountStatusesFilter.new(@target_account, @source_account).results.with_discarded.find(Array(@status_ids)).pluck(:id)
   end
 
   def payload
