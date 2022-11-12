@@ -297,7 +297,7 @@ fr:
       new:
         create: Créer une annonce
         title: Nouvelle annonce
-      publish: Publier
+      publish: POUET
       published_msg: Annonce publiée avec succès !
       scheduled_for: Planifiée pour %{time}
       scheduled_msg: Annonce planifiée pour publication !
