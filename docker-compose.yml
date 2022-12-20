@@ -116,6 +116,8 @@ services:
   translate:
     image: libretranslate
     restart: unless-stopped
+    volumes:
+      - libretranslate.db:/app/db/api_keys.db
 
   ## Uncomment to enable federation with tor instances along with adding the following ENV variables
   ## http_proxy=http://privoxy:8118
