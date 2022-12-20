@@ -116,9 +116,12 @@ services:
   translate:
     image: libretranslate/libretranslate
     restart: unless-stopped
+    environment:
+      - LT_API_KEYS_DB_PATH=/app/db/api_keys.db
     volumes:
       - ./libretranslate.db:/app/db/api_keys.db
     networks:
+      - external_network
       - internal_network
 
   ## Uncomment to enable federation with tor instances along with adding the following ENV variables
