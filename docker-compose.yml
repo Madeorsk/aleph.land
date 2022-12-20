@@ -114,10 +114,12 @@ services:
     <<: *sidekiq
 
   translate:
-    image: libretranslate
+    image: libretranslate/libretranslate
     restart: unless-stopped
     volumes:
       - ./libretranslate.db:/app/db/api_keys.db
+    networks:
+      - internal_network
 
   ## Uncomment to enable federation with tor instances along with adding the following ENV variables
   ## http_proxy=http://privoxy:8118
