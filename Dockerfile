@@ -74,6 +74,7 @@ RUN apt-get update && \
         libidn12 \
         libyaml-0-2 \
         file \
+        curl \
         ca-certificates \
         tzdata \
         libreadline8 \
@@ -96,6 +97,9 @@ ENV RAILS_ENV="production" \
 # Set the run user
 USER mastodon
 WORKDIR /opt/mastodon
+
+# Install TangerineUI
+RUN ./install-tangerineui.sh
 
 # Precompile assets
 RUN OTP_SECRET=precompile_placeholder SECRET_KEY_BASE=precompile_placeholder rails assets:precompile
