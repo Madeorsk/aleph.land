@@ -119,7 +119,9 @@ services:
     environment:
       - LT_API_KEYS_DB_PATH=/app/db/api_keys.db
     volumes:
-      - ./libretranslate.db:/app/db/api_keys.db
+      - type: bind
+        source: ./libretranslate.db
+        target: /app/db/api_keys.db
     networks:
       - external_network
       - internal_network
