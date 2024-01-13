@@ -77,7 +77,7 @@ services:
 
   streaming:
     build: .
-    image: docker.madeorsk.com/aleph.land/mastodon
+    image: docker.madeorsk.com/aleph.land/mastodon:streaming
     restart: always
     env_file: .env.production
     command: node ./streaming
