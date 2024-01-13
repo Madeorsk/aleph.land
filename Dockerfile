@@ -203,6 +203,9 @@ COPY --from=bundler /usr/local/bundle/ /usr/local/bundle/
 
 ARG TARGETPLATFORM
 
+# Install TangerineUI
+RUN ./install-tangerineui.sh
+
 RUN \
 # Use Ruby on Rails to create Mastodon assets
   OTP_SECRET=precompile_placeholder SECRET_KEY_BASE=precompile_placeholder bundle exec rails assets:precompile; \

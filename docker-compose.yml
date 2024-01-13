@@ -56,7 +56,7 @@ services:
 
   web:
     build: .
-    image: ghcr.io/mastodon/mastodon:v4.2.0
+    image: docker.madeorsk.com/aleph.land/mastodon
     restart: always
     env_file: .env.production
     command: bundle exec puma -C config/puma.rb
@@ -67,7 +67,7 @@ services:
       # prettier-ignore
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:3000/health || exit 1']
     ports:
-      - '127.0.0.1:3000:3000'
+      - "127.0.0.1:8001:3000"
     depends_on:
       - db
       - redis
@@ -77,7 +77,7 @@ services:
 
   streaming:
     build: .
-    image: ghcr.io/mastodon/mastodon:v4.2.0
+    image: docker.madeorsk.com/aleph.land/mastodon
     restart: always
     env_file: .env.production
     command: node ./streaming
@@ -88,17 +88,17 @@ services:
       # prettier-ignore
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
     ports:
-      - '127.0.0.1:4000:4000'
+      - "127.0.0.1:8002:4000"
     depends_on:
       - db
       - redis
 
-  sidekiq:
+  sidekiq: &sidekiq
     build: .
-    image: ghcr.io/mastodon/mastodon:v4.2.0
+    image: docker.madeorsk.com/aleph.land/mastodon
     restart: always
     env_file: .env.production
-    command: bundle exec sidekiq
+    command: bundle exec sidekiq -c ${SIDEKIQ_THREADS}
     depends_on:
       - db
       - redis
@@ -109,6 +109,20 @@ services:
       - ./public/system:/mastodon/public/system
     healthcheck:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
+
+  sidekiq2:
+    <<: *sidekiq
+
+  translate:
+    image: libretranslate/libretranslate
+    restart: unless-stopped
+    environment:
+      - LT_API_KEYS_DB_PATH=/app/db/api_keys.db
+    volumes:
+      - ./libretranslate.db:/app/db/api_keys.db
+    networks:
+      - external_network
+      - internal_network
 
   ## Uncomment to enable federation with tor instances along with adding the following ENV variables
   ## http_hidden_proxy=http://privoxy:8118
