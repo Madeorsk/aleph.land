@@ -238,6 +238,9 @@ RUN \
 # Copy Mastodon sources into final layer
 COPY . /opt/mastodon/
 
+# Install TangerineUI
+RUN ./install-tangerineui.sh
+
 # Copy compiled assets to layer
 COPY --from=precompiler /opt/mastodon/public/packs /opt/mastodon/public/packs
 COPY --from=precompiler /opt/mastodon/public/assets /opt/mastodon/public/assets
