@@ -11,6 +11,7 @@ import { openModal } from 'flavours/glitch/actions/modal';
 import { domain, version, source_url, statusPageUrl, profile_directory as profileDirectory } from 'flavours/glitch/initial_state';
 import { PERMISSION_INVITE_USERS } from 'flavours/glitch/permissions';
 import { logOut } from 'flavours/glitch/utils/log_out';
+import { LiberapayStatus } from 'flavours/glitch/components/liberapay_status';
 
 const messages = defineMessages({
   logoutMessage: { id: 'confirmations.logout.message', defaultMessage: 'Are you sure you want to log out?' },
@@ -63,6 +64,8 @@ class LinkFooter extends PureComponent {
 
     return (
       <div className='link-footer'>
+        <LiberapayStatus />
+
         <p>
           <strong>{domain}</strong>:
           {' '}

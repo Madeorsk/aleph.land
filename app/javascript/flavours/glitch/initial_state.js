@@ -35,6 +35,9 @@
  * @property {boolean} trends_enabled
  * @property {boolean} single_user_mode
  * @property {string} source_url
+ * @property {string} liberapay_url
+ * @property {string} liberapay_donations_goal
+ * @property {string} liberapay_donations_status
  * @property {string} streaming_api_base_url
  * @property {boolean} timeline_preview
  * @property {string} title
@@ -117,6 +120,9 @@ export const trendsEnabled = getMeta('trends_enabled');
 export const showTrends = getMeta('show_trends');
 export const singleUserMode = getMeta('single_user_mode');
 export const source_url = getMeta('source_url');
+export const liberapayUrl = getMeta('liberapay_url');
+export const liberapayDonationsGoal = Number.parseFloat(getMeta('liberapay_donations_goal') ?? "0");
+export const liberapayDonationsStatus = Number.parseFloat(getMeta('liberapay_donations_status') ?? "0");
 export const timelinePreview = getMeta('timeline_preview');
 export const title = getMeta('title');
 export const trendsAsLanding = getMeta('trends_as_landing_page');
