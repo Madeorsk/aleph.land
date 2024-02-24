@@ -69,7 +69,6 @@ export const hasMultiColumnPath = initialPath === '/'
  * @property {boolean=} critical_updates_pending
  * @property {InitialStateMeta} meta
  * @property {object} local_settings
- * @property {number} max_toot_chars
  * @property {number} max_feed_hashtags
  * @property {number} poll_limits
  */
@@ -136,7 +135,6 @@ export const statusPageUrl = getMeta('status_page_url');
 export const sso_redirect = getMeta('sso_redirect');
 
 // Glitch-soc-specific settings
-export const maxChars = (initialState && initialState.max_toot_chars) || 500;
 export const maxFeedHashtags = (initialState && initialState.max_feed_hashtags) || 4;
 export const favouriteModal = getMeta('favourite_modal');
 export const pollLimits = (initialState && initialState.poll_limits);
