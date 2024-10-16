@@ -375,9 +375,6 @@ RUN \
 # Copy Mastodon sources into final layer
 COPY . /opt/mastodon/
 
-# Install TangerineUI
-RUN ./install-tangerineui.sh
-
 # Copy compiled assets to layer
 COPY --from=precompiler /opt/mastodon/public/packs /opt/mastodon/public/packs
 COPY --from=precompiler /opt/mastodon/public/assets /opt/mastodon/public/assets
@@ -389,6 +386,9 @@ COPY --from=libvips /usr/local/libvips/lib /usr/local/lib
 # Copy ffpmeg components to layer
 COPY --from=ffmpeg /usr/local/ffmpeg/bin /usr/local/bin
 COPY --from=ffmpeg /usr/local/ffmpeg/lib /usr/local/lib
+
+# Install TangerineUI
+RUN ./install-tangerineui.sh
 
 RUN \
   ldconfig; \
