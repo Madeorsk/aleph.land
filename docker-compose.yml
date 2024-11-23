@@ -114,7 +114,7 @@ services:
     <<: *sidekiq
 
   translate:
-    image: libretranslate/libretranslate
+    image: libretranslate/libretranslate:v1.5.5
     restart: unless-stopped
     environment:
       - LT_API_KEYS_DB_PATH=/app/db/api_keys.db
