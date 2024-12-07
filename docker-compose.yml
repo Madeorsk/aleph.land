@@ -30,22 +30,26 @@ services:
     restart: always
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
     environment:
-      - "ES_JAVA_OPTS=-Xms2048m -Xmx2048m -Des.enforce.bootstrap.checks=true"
-      - "xpack.license.self_generated.type=basic"
-      - "xpack.security.enabled=false"
-      - "xpack.watcher.enabled=false"
-      - "xpack.graph.enabled=false"
-      - "xpack.ml.enabled=false"
-      - "bootstrap.memory_lock=true"
-      - "cluster.name=es-mastodon"
-      - "discovery.type=single-node"
-      - "thread_pool.write.queue_size=1000"
+      - 'ES_JAVA_OPTS=-Xms2048m -Xmx2048m -Des.enforce.bootstrap.checks=true'
+      - 'xpack.license.self_generated.type=basic'
+      - 'xpack.security.enabled=false'
+      - 'xpack.watcher.enabled=false'
+      - 'xpack.graph.enabled=false'
+      - 'xpack.ml.enabled=false'
+      - 'bootstrap.memory_lock=true'
+      - 'cluster.name=es-mastodon'
+      - 'discovery.type=single-node'
+      - 'thread_pool.write.queue_size=1000'
     networks:
-       - internal_network
+      - internal_network
     healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      test:
+        [
+          'CMD-SHELL',
+          'curl --silent --fail localhost:9200/_cluster/health || exit 1',
+        ]
     volumes:
-       - ./elasticsearch:/usr/share/elasticsearch/data
+      - ./elasticsearch:/usr/share/elasticsearch/data
     ulimits:
       memlock:
         soft: -1
@@ -67,7 +71,7 @@ services:
       # prettier-ignore
       test: ['CMD-SHELL',"curl -s --noproxy localhost localhost:3000/health | grep -q 'OK' || exit 1"]
     ports:
-      - "127.0.0.1:8001:3000"
+      - '127.0.0.1:8001:3000'
     depends_on:
       - db
       - redis
@@ -76,7 +80,9 @@ services:
       - ./public/system:/mastodon/public/system
 
   streaming:
-    build: .
+    build:
+      dockerfile: ./streaming/Dockerfile
+      context: .
     image: docker.madeorsk.com/aleph.land/mastodon:streaming
     restart: always
     env_file: .env.production
@@ -88,7 +94,7 @@ services:
       # prettier-ignore
       test: ['CMD-SHELL', "curl -s --noproxy localhost localhost:4000/api/v1/streaming/health | grep -q 'OK' || exit 1"]
     ports:
-      - "127.0.0.1:8002:4000"
+      - '127.0.0.1:8002:4000'
     depends_on:
       - db
       - redis
