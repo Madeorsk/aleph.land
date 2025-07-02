@@ -85,9 +85,11 @@ class Account < ApplicationRecord
   include Account::Associations
   include Account::Avatar
   include Account::Counters
+  include Account::FaspConcern
   include Account::FinderConcern
   include Account::Header
   include Account::Interactions
+  include Account::Mappings
   include Account::Merging
   include Account::Search
   include Account::Sensitizes
@@ -153,7 +155,7 @@ class Account < ApplicationRecord
   scope :not_excluded_by_account, ->(account) { where.not(id: account.excluded_from_timeline_account_ids) }
   scope :not_domain_blocked_by_account, ->(account) { where(arel_table[:domain].eq(nil).or(arel_table[:domain].not_in(account.excluded_from_timeline_domains))) }
   scope :dormant, -> { joins(:account_stat).merge(AccountStat.without_recent_activity) }
-  scope :with_username, ->(value) { where arel_table[:username].lower.eq(value.to_s.downcase) }
+  scope :with_username, ->(value) { value.is_a?(Array) ? where(arel_table[:username].lower.in(value.map { |x| x.to_s.downcase })) : where(arel_table[:username].lower.eq(value.to_s.downcase)) }
   scope :with_domain, ->(value) { where arel_table[:domain].lower.eq(value&.to_s&.downcase) }
   scope :without_memorial, -> { where(memorial: false) }
   scope :duplicate_uris, -> { select(:uri, Arel.star.count).group(:uri).having(Arel.star.count.gt(1)) }
@@ -161,6 +163,7 @@ class Account < ApplicationRecord
   after_update_commit :trigger_update_webhooks
 
   delegate :email,
+           :email_domain,
            :unconfirmed_email,
            :current_sign_in_at,
            :created_at,
