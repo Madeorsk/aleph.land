@@ -1,65 +1,60 @@
-$liberapay_color: #F6C915;
+@use 'variables' as *;
 
-.liberapay-status
-{
+$liberapay-color: #f6c915;
+
+.liberapay-status {
   margin: 0.5em auto;
   font-size: 0.9rem;
   text-align: center;
 
-  &, a { color: $darker-text-color; }
-
-  .liberapay
-  {
-    color: $liberapay_color;
+  &,
+  a {
+    color: $darker-text-color;
   }
 
-  .progress
-  {
-    progress
-    {
+  .liberapay {
+    color: $liberapay-color;
+  }
+
+  .progress {
+    progress {
       // Reset the default appearance
       -webkit-appearance: none;
       appearance: none;
-
       display: block;
       margin: 0.5em auto;
       width: 100%;
       border-radius: 0.2em;
-
       border: none;
 
-      &[value]
-      {
+      &[value] {
         background: $ui-base-color;
       }
-      &::-webkit-progress-bar
-      {
+
+      &::-webkit-progress-bar {
         border-radius: 0.2em;
         background: $ui-base-color;
       }
 
-      &::-moz-progress-bar
-      {
+      &::-moz-progress-bar {
         border-radius: 0.2em;
-        background: $liberapay_color;
+        background: $liberapay-color;
       }
-      &::-webkit-progress-value
-      {
+
+      &::-webkit-progress-value {
         border-radius: 0.2em;
-        background: $liberapay_color;
+        background: $liberapay-color;
       }
     }
   }
 }
 
-.column .liberapay-status .progress progress
-{
-  &[value]
-  {
+.column .liberapay-status .progress progress {
+  &[value] {
     background: $ui-base-lighter-color;
   }
-  &::-webkit-progress-bar
-  {
+
+  &::-webkit-progress-bar {
     background: $ui-base-lighter-color;
   }
 }
