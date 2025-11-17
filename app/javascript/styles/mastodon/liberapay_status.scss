@@ -1,0 +1,60 @@
+@use 'variables' as *;
+
+$liberapay-color: #f6c915;
+
+.liberapay-status {
+  margin: 0.5em auto;
+  font-size: 0.9rem;
+  text-align: center;
+
+  &,
+  a {
+    color: var(--color-text-secondary);
+  }
+
+  .liberapay {
+    color: $liberapay-color;
+  }
+
+  .progress {
+    progress {
+      // Reset the default appearance
+      -webkit-appearance: none;
+      appearance: none;
+      display: block;
+      margin: 0.5em auto;
+      width: 100%;
+      border-radius: 0.2em;
+      border: none;
+
+      &[value] {
+        background: var(--color-bg-secondary);
+      }
+
+      &::-webkit-progress-bar {
+        border-radius: 0.2em;
+        background: var(--color-bg-secondary);
+      }
+
+      &::-moz-progress-bar {
+        border-radius: 0.2em;
+        background: $liberapay-color;
+      }
+
+      &::-webkit-progress-value {
+        border-radius: 0.2em;
+        background: $liberapay-color;
+      }
+    }
+  }
+}
+
+.column .liberapay-status .progress progress {
+  &[value] {
+    background: var(--color-bg-tertiary);
+  }
+
+  &::-webkit-progress-bar {
+    background: var(--color-bg-tertiary);
+  }
+}

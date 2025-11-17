@@ -82,6 +82,12 @@ class REST::InstanceSerializer < ActiveModel::Serializer
         profile_field_value_limit: Account::Field::MAX_CHARACTERS_LOCAL,
       },
 
+      liberapay: {
+        url: Rails.configuration.x.liberapay_url,
+        goal: Rails.configuration.x.liberapay_donations_goal,
+        status: Rails.configuration.x.liberapay_donations_status,
+      },
+
       statuses: {
         max_characters: StatusLengthValidator::MAX_CHARS,
         max_media_attachments: Status::MEDIA_ATTACHMENTS_LIMIT,
