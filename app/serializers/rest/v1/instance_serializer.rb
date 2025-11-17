@@ -67,6 +67,12 @@ class REST::V1::InstanceSerializer < ActiveModel::Serializer
         max_featured_tags: FeaturedTag::LIMIT,
       },
 
+      liberapay: {
+        url: Rails.configuration.x.liberapay_url,
+        goal: Rails.configuration.x.liberapay_donations_goal,
+        status: Rails.configuration.x.liberapay_donations_status,
+      },
+
       statuses: {
         max_characters: StatusLengthValidator::MAX_CHARS,
         max_media_attachments: Status::MEDIA_ATTACHMENTS_LIMIT,

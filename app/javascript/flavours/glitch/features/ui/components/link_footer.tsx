@@ -11,6 +11,8 @@ import {
   termsOfServiceEnabled,
 } from 'flavours/glitch/initial_state';
 
+import { LiberapayStatus } from 'flavours/glitch/components/liberapay_status';
+
 import classes from './link_footer.module.scss';
 
 export const LinkFooter: React.FC<{
@@ -21,6 +23,7 @@ export const LinkFooter: React.FC<{
   return (
     <footer className={classes.wrapper} data-context={context}>
       <section>
+        <LiberapayStatus />
         <h2 className={classes.heading}>{`${domain}:`}</h2>
         <ul className={classes.list}>
           <li>
