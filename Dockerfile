@@ -300,6 +300,11 @@ COPY --from=libvips /usr/local/libvips/lib /usr/local/lib
 COPY --from=bundler /opt/mastodon /opt/mastodon/
 COPY --from=bundler /usr/local/bundle/ /usr/local/bundle/
 
+ARG TARGETPLATFORM
+
+# Install TangerineUI
+RUN ./install-tangerineui.sh
+
 RUN \
   ldconfig; \
   # Use Ruby on Rails to create Mastodon assets
@@ -374,6 +379,9 @@ COPY --from=libvips /usr/local/libvips/lib /usr/local/lib
 # Copy ffpmeg components to layer
 COPY --from=ffmpeg /usr/local/ffmpeg/bin /usr/local/bin
 COPY --from=ffmpeg /usr/local/ffmpeg/lib /usr/local/lib
+
+# Install TangerineUI
+RUN ./install-tangerineui.sh
 
 RUN \
   ldconfig; \

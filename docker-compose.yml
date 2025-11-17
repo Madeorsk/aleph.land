@@ -25,41 +25,38 @@ services:
     volumes:
       - ./redis:/data
 
-  # es:
-  #   restart: always
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
-  #   environment:
-  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.enforce.bootstrap.checks=true"
-  #     - "xpack.license.self_generated.type=basic"
-  #     - "xpack.security.enabled=false"
-  #     - "xpack.watcher.enabled=false"
-  #     - "xpack.graph.enabled=false"
-  #     - "xpack.ml.enabled=false"
-  #     - "bootstrap.memory_lock=true"
-  #     - "cluster.name=es-mastodon"
-  #     - "discovery.type=single-node"
-  #     - "thread_pool.write.queue_size=1000"
-  #   networks:
-  #      - external_network
-  #      - internal_network
-  #   healthcheck:
-  #      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
-  #   volumes:
-  #      - ./elasticsearch:/usr/share/elasticsearch/data
-  #   ulimits:
-  #     memlock:
-  #       soft: -1
-  #       hard: -1
-  #     nofile:
-  #       soft: 65536
-  #       hard: 65536
-  #   ports:
-  #     - '127.0.0.1:9200:9200'
+  es:
+    hostname: elasticsearch
+    restart: always
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
+    environment:
+      - "ES_JAVA_OPTS=-Xms2048m -Xmx2048m -Des.enforce.bootstrap.checks=true"
+      - "xpack.license.self_generated.type=basic"
+      - "xpack.security.enabled=false"
+      - "xpack.watcher.enabled=false"
+      - "xpack.graph.enabled=false"
+      - "xpack.ml.enabled=false"
+      - "bootstrap.memory_lock=true"
+      - "cluster.name=es-mastodon"
+      - "discovery.type=single-node"
+      - "thread_pool.write.queue_size=1000"
+    networks:
+       - internal_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+    volumes:
+       - ./elasticsearch:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
 
   web:
-    # You can uncomment the following line if you want to not use the prebuilt image, for example if you have local code changes
-    # build: .
-    image: ghcr.io/glitch-soc/mastodon:v4.5.1
+    build: .
+    image: docker.madeorsk.com/aleph.land/mastodon
     restart: always
     env_file: .env.production
     command: bundle exec puma -C config/puma.rb
@@ -70,7 +67,7 @@ services:
       # prettier-ignore
       test: ['CMD-SHELL',"curl -s --noproxy localhost localhost:3000/health | grep -q 'OK' || exit 1"]
     ports:
-      - '127.0.0.1:3000:3000'
+      - "127.0.0.1:8001:3000"
     depends_on:
       - db
       - redis
@@ -79,11 +76,8 @@ services:
       - ./public/system:/mastodon/public/system
 
   streaming:
-    # You can uncomment the following lines if you want to not use the prebuilt image, for example if you have local code changes
-    # build:
-    #   dockerfile: ./streaming/Dockerfile
-    #   context: .
-    image: ghcr.io/glitch-soc/mastodon-streaming:v4.5.1
+    build: .
+    image: docker.madeorsk.com/aleph.land/mastodon:streaming
     restart: always
     env_file: .env.production
     command: node ./streaming/index.js
@@ -94,18 +88,17 @@ services:
       # prettier-ignore
       test: ['CMD-SHELL', "curl -s --noproxy localhost localhost:4000/api/v1/streaming/health | grep -q 'OK' || exit 1"]
     ports:
-      - '127.0.0.1:4000:4000'
+      - "127.0.0.1:8002:4000"
     depends_on:
       - db
       - redis
 
-  sidekiq:
-    # You can uncomment the following line if you want to not use the prebuilt image, for example if you have local code changes
-    # build: .
-    image: ghcr.io/glitch-soc/mastodon:v4.5.1
+  sidekiq: &sidekiq
+    build: .
+    image: docker.madeorsk.com/aleph.land/mastodon
     restart: always
     env_file: .env.production
-    command: bundle exec sidekiq
+    command: bundle exec sidekiq -c ${SIDEKIQ_THREADS}
     depends_on:
       - db
       - redis
@@ -116,6 +109,22 @@ services:
       - ./public/system:/mastodon/public/system
     healthcheck:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 8' || false"]
+
+  sidekiq2:
+    <<: *sidekiq
+
+  translate:
+    image: libretranslate/libretranslate:v1.6.4
+    restart: unless-stopped
+    environment:
+      - LT_API_KEYS_DB_PATH=/app/db/api_keys.db
+    volumes:
+      - type: bind
+        source: ./libretranslate.db
+        target: /app/db/api_keys.db
+    networks:
+      - external_network
+      - internal_network
 
   ## Uncomment to enable federation with tor instances along with adding the following ENV variables
   ## http_hidden_proxy=http://privoxy:8118

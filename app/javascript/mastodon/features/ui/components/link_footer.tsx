@@ -11,6 +11,8 @@ import {
   termsOfServiceEnabled,
 } from 'mastodon/initial_state';
 
+import { LiberapayStatus } from 'mastodon/components/liberapay_status';
+
 const DividingCircle: React.FC = () => <span aria-hidden>{' · '}</span>;
 
 export const LinkFooter: React.FC<{
@@ -18,6 +20,8 @@ export const LinkFooter: React.FC<{
 }> = ({ multiColumn }) => {
   return (
     <div className='link-footer'>
+      <LiberapayStatus />
+
       <p>
         <strong>{domain}</strong>:{' '}
         <Link to='/about' target={multiColumn ? '_blank' : undefined}>

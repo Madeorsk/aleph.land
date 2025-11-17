@@ -34,6 +34,9 @@ interface InitialStateMeta {
   trends_enabled: boolean;
   single_user_mode: boolean;
   source_url: string;
+  liberapay_url: string;
+  liberapay_donations_goal: string;
+  liberapay_donations_status: string;
   streaming_api_base_url: string;
   local_live_feed_access: 'public' | 'authenticated' | 'disabled';
   remote_live_feed_access: 'public' | 'authenticated' | 'disabled';
@@ -142,6 +145,9 @@ export const trendsEnabled = getMeta('trends_enabled');
 export const showTrends = getMeta('show_trends');
 export const singleUserMode = getMeta('single_user_mode');
 export const source_url = getMeta('source_url');
+export const liberapayUrl = getMeta('liberapay_url');
+export const liberapayDonationsGoal = Number.parseFloat(getMeta('liberapay_donations_goal') ?? "0")
+export const liberapayDonationsStatus = Number.parseFloat(getMeta('liberapay_donations_status') ?? "0");
 export const localLiveFeedAccess = getMeta('local_live_feed_access');
 export const remoteLiveFeedAccess = getMeta('remote_live_feed_access');
 export const localTopicFeedAccess = getMeta('local_topic_feed_access');
